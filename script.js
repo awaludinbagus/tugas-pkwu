@@ -1,6 +1,4 @@
-// JavaScript Document
-
-// Mobile menu toggle
+// ============ Mobile Menu Toggle ============
 const menuIcon = document.querySelector('.menu-icon');
 const mobileNav = document.querySelector('.mobile-nav');
 const mobileNavClose = document.querySelector('.mobile-nav-close');
@@ -22,17 +20,16 @@ if (menuIcon && mobileNav) {
       }
    });
 
-   // Close button
    if (mobileNavClose) {
       mobileNavClose.addEventListener('click', closeMobileMenu);
    }
 
-   // Close mobile menu when clicking a link
    document.querySelectorAll('.mobile-nav a').forEach(link => {
       link.addEventListener('click', closeMobileMenu);
    });
 }
 
+// ============ Project Navigation ============
 let currentProject = 0;
 const totalProjects = 5;
 
@@ -43,17 +40,14 @@ const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 
 function updateProject(index) {
-   // Update images
    imageContainers.forEach((container, i) => {
       container.classList.toggle('active', i === index);
    });
 
-   // Update details
    projectDetails.forEach((detail, i) => {
       detail.classList.toggle('active', i === index);
    });
 
-   // Update progress dots
    progressDots.forEach((dot, i) => {
       dot.classList.toggle('active', i === index);
    });
@@ -61,36 +55,38 @@ function updateProject(index) {
    currentProject = index;
 }
 
-// Navigation arrows - continuous loop
 prevBtn.addEventListener('click', () => {
    const newIndex = currentProject > 0 ? currentProject - 1 : totalProjects - 1;
    updateProject(newIndex);
+   clearAutoPlay();
 });
 
 nextBtn.addEventListener('click', () => {
    const newIndex = currentProject < totalProjects - 1 ? currentProject + 1 : 0;
    updateProject(newIndex);
+   clearAutoPlay();
 });
 
-// Progress dots navigation
 progressDots.forEach((dot, index) => {
    dot.addEventListener('click', () => {
       updateProject(index);
+      clearAutoPlay();
    });
 });
 
-// Keyboard navigation - continuous loop
 document.addEventListener('keydown', (e) => {
    if (e.key === 'ArrowLeft') {
       const newIndex = currentProject > 0 ? currentProject - 1 : totalProjects - 1;
       updateProject(newIndex);
+      clearAutoPlay();
    } else if (e.key === 'ArrowRight') {
       const newIndex = currentProject < totalProjects - 1 ? currentProject + 1 : 0;
       updateProject(newIndex);
+      clearAutoPlay();
    }
 });
 
-// Touch/swipe support for mobile
+// ============ Touch/Swipe Support ============
 let touchStartX = 0;
 let touchEndX = 0;
 
@@ -105,21 +101,33 @@ document.addEventListener('touchend', (e) => {
 
 function handleSwipe() {
    if (touchEndX < touchStartX - 50) {
-      // Swipe left - next project (loop)
       const newIndex = currentProject < totalProjects - 1 ? currentProject + 1 : 0;
       updateProject(newIndex);
+      clearAutoPlay();
    }
    if (touchEndX > touchStartX + 50) {
-      // Swipe right - previous project (loop)
       const newIndex = currentProject > 0 ? currentProject - 1 : totalProjects - 1;
       updateProject(newIndex);
+      clearAutoPlay();
    }
 }
 
-// Initialize
-updateProject(0);
+// ============ Auto-Play Slider ============
+let autoPlay;
 
-// Hide project controls when scrolling past work section
+function startAutoPlay() {
+   autoPlay = setInterval(() => {
+      const newIndex = currentProject < totalProjects - 1 ? currentProject + 1 : 0;
+      updateProject(newIndex);
+   }, 6000);
+}
+
+function clearAutoPlay() {
+   clearInterval(autoPlay);
+   startAutoPlay();
+}
+
+// ============ Project Controls Visibility ============
 const projectControls = document.querySelector('.project-controls');
 const workSection = document.querySelector('#work');
 
@@ -137,14 +145,29 @@ function updateControlsVisibility() {
 window.addEventListener('scroll', updateControlsVisibility);
 updateControlsVisibility();
 
-// Contact form submission
-document.querySelector('.contact-form').addEventListener('submit', (e) => {
-   e.preventDefault();
-   alert('Thank you for your message! I will get back to you soon.');
-   e.target.reset();
-});
+// ============ Contact Form ============
+const contactForm = document.querySelector('.contact-form');
+if (contactForm) {
+   contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('name')?.value;
+      const email = document.getElementById('email')?.value;
+      const subject = document.getElementById('subject')?.value;
+      const message = document.getElementById('message')?.value;
+      
+      if (name && email && subject && message) {
+         alert('Terima kasih! Pesan Anda telah diterima. Kami akan segera menghubungi Anda. 📧');
+         contactForm.reset();
+         contactForm.style.opacity = '0.5';
+         setTimeout(() => {
+            contactForm.style.opacity = '1';
+         }, 500);
+      }
+   });
+}
 
-// Smooth scroll for navigation
+// ============ Smooth Scroll Navigation ============
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
    anchor.addEventListener('click', function (e) {
       e.preventDefault();
@@ -158,7 +181,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
    });
 });
 
-// Active menu highlighting on scroll
+// ============ Active Menu Highlighting ============
 const sections = document.querySelectorAll('section[id], #work');
 const navLinks = document.querySelectorAll('.desktop-nav a, .mobile-nav a');
 
@@ -180,109 +203,148 @@ function highlightActiveSection() {
       }
    });
 }
-// --- Animasi Scroll Reveal ---
 
-// Fungsi untuk inisialisasi observer
-const revealOnScroll = () => {
-  const observerOptions = {
-    threshold: 0.15 // Elemen akan muncul jika 15% bagiannya sudah terlihat
-  };
+window.addEventListener('scroll', highlightActiveSection);
+highlightActiveSection();
 
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Tambahkan class active untuk memicu animasi CSS
-        entry.target.classList.add('active');
-        // Berhenti memantau elemen jika sudah muncul (opsional, agar animasi hanya sekali)
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  // Cari semua elemen yang ingin dianimasikan
-  const targets = document.querySelectorAll('.reveal');
-  targets.forEach(target => observer.observe(target));
-};
-
-// Jalankan fungsi setelah DOM siap
-document.addEventListener('DOMContentLoaded', revealOnScroll);
-// --- TAMBAHKAN KODE INI DI BAWAH KODE LAMA ANDA ---
-
+// ============ Scroll Reveal Animation ============
 const observerOptions = {
-    threshold: 0.15 // Animasi jalan saat 15% elemen terlihat
+    threshold: 0.15
 };
 
 const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.classList.add('active');
-            // Jika ingin animasi hanya sekali, aktifkan baris di bawah:
-            // revealObserver.unobserve(entry.target);
         }
     });
 }, observerOptions);
 
-// Mengaktifkan pengamatan pada semua elemen dengan class 'reveal'
 document.addEventListener('DOMContentLoaded', () => {
     const revealElements = document.querySelectorAll('.reveal');
     revealElements.forEach(el => revealObserver.observe(el));
 });
-// 1. Tambahkan fitur Auto-Play Slider
-let autoPlay = setInterval(() => {
-    const newIndex = currentProject < totalProjects - 1 ? currentProject + 1 : 0;
-    updateProject(newIndex);
-}, 5000); // Berganti setiap 5 detik
 
-// Berhenti auto-play jika user mengklik tombol manual
-[prevBtn, nextBtn].forEach(btn => {
-    btn.addEventListener('click', () => clearInterval(autoPlay));
-});
-
-// 2. Efek Parallax Mouse (Foto bergerak mengikuti mouse)
+// ============ Parallax Mouse Effect ============
 document.addEventListener('mousemove', (e) => {
-    const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
-    const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+    const moveX = (e.clientX - window.innerWidth / 2) * 0.005;
+    const moveY = (e.clientY - window.innerHeight / 2) * 0.005;
     
     const activeImage = document.querySelector('.image-container.active .project-image');
     if(activeImage) {
-        activeImage.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        activeImage.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`;
     }
 });
 
-window.addEventListener('scroll', highlightActiveSection);
-highlightActiveSection();
+// ============ Testimonial Submission ============
+const testimonialForm = document.getElementById('submit-testimonial');
+if (testimonialForm) {
+    testimonialForm.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-document.getElementById('submit-testimonial').addEventListener('submit', function(e) {
-    e.preventDefault(); // Mencegah halaman refresh
+        const name = document.getElementById('testi-name').value.trim();
+        const role = document.getElementById('testi-role').value.trim();
+        const message = document.getElementById('testi-message').value.trim();
+        
+        if (!name || !role || !message) {
+            alert('⚠️ Harap isi semua field!');
+            return;
+        }
 
-    // 1. Ambil data dari form
-    const name = document.getElementById('testi-name').value;
-    const role = document.getElementById('testi-role').value;
-    const message = document.getElementById('testi-message').value;
-    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        const initials = name.split(' ')
+            .map(n => n[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
 
-    // 2. Buat elemen kartu testimoni baru
-    const newTestimonial = document.createElement('div');
-    newTestimonial.className = 'testimonial-card';
-    newTestimonial.style.border = '2px solid #ff3366'; // Highlight untuk yang baru
-    
-    newTestimonial.innerHTML = `
-        <div class="quote-icon">"</div>
-        <p class="testimonial-text">${message}</p>
-        <div class="testimonial-author">
-            <div class="author-avatar">${initials}</div>
-            <div class="author-info">
-                <h4>${name}</h4>
-                <p>${role}</p>
+        const newTestimonial = document.createElement('div');
+        newTestimonial.className = 'testimonial-card';
+        newTestimonial.style.animation = 'slideInUp 0.6s ease';
+        
+        newTestimonial.innerHTML = `
+            <div class="quote-icon">"</div>
+            <p class="testimonial-text">${message}</p>
+            <div class="testimonial-author">
+                <div class="author-avatar">${initials}</div>
+                <div class="author-info">
+                    <h4>${name}</h4>
+                    <p>${role}</p>
+                </div>
             </div>
-        </div>
-    `;
+        `;
 
-    // 3. Masukkan ke dalam grid (di bagian paling atas)
-    const testimonialList = document.getElementById('testimonial-list');
-    testimonialList.prepend(newTestimonial);
+        const testimonialList = document.getElementById('testimonial-list');
+        testimonialList.prepend(newTestimonial);
 
-    // 4. Reset form dan beri notifikasi
-    this.reset();
-    alert('Terima kasih! Testimoni Anda telah ditambahkan.');
+        this.reset();
+        alert('✅ Terima kasih! Testimoni Anda telah ditambahkan.');
+        document.getElementById('testi-name').focus();
+    });
+}
+
+// ============ Scroll to Top Button ============
+const scrollTopBtn = document.createElement('button');
+scrollTopBtn.id = 'scrollTopBtn';
+scrollTopBtn.textContent = '↑';
+scrollTopBtn.style.cssText = `
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: #ff3366;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: none;
+    z-index: 999;
+    box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+    transition: all 0.3s ease;
+    font-weight: bold;
+`;
+
+document.body.appendChild(scrollTopBtn);
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 500) {
+        scrollTopBtn.style.display = 'flex';
+        scrollTopBtn.style.alignItems = 'center';
+        scrollTopBtn.style.justifyContent = 'center';
+    } else {
+        scrollTopBtn.style.display = 'none';
+    }
 });
+
+scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+scrollTopBtn.addEventListener('mouseenter', () => {
+    scrollTopBtn.style.background = '#ff5580';
+    scrollTopBtn.style.transform = 'scale(1.1) translateY(-5px)';
+});
+
+scrollTopBtn.addEventListener('mouseleave', () => {
+    scrollTopBtn.style.background = '#ff3366';
+    scrollTopBtn.style.transform = 'scale(1) translateY(0)';
+});
+
+// ============ Page Load Animation ============
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.style.opacity = '0';
+    setTimeout(() => {
+        document.body.style.transition = 'opacity 0.5s ease';
+        document.body.style.opacity = '1';
+        startAutoPlay();
+    }, 100);
+});
+
+// ============ Initialize ============
+updateProject(0);
+
+console.log('✅ All scripts loaded successfully!');
