@@ -257,23 +257,23 @@ header {
 }
 
 .image-container:nth-child(1) .project-image {
-	background-image: url(logo.jpeg);
+	background-image: url(images/alat.jpeg);
 }
 
 .image-container:nth-child(2) .project-image {
-	background-image: url(layanan.jpeg);
+	background-image: url(images/layanan.jpeg);
 }
 
 .image-container:nth-child(3) .project-image {
-	background-image: url(pemasaran.jpeg);
+	background-image: url(images/pemasaran.jpeg);
 }
 
 .image-container:nth-child(4) .project-image {
-	background-image: url(alat.jpeg);
+	background-image: url(images/alat.jpeg);
 }
 
 .image-container:nth-child(5) .project-image {
-	background-image: url(proses.jpeg);
+	background-image: url(images/proses.jpeg);
 }
 
 .right-panel {
@@ -501,7 +501,7 @@ header {
 .about-image {
 	position: relative;
 	aspect-ratio: 3/4;
-	background-image: url(strategi.jpeg);
+	background-image: url(images/strategi.jpeg);
 	background-size: cover;
 	background-position: center;
 	display: flex;

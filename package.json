@@ -1,0 +1,24 @@
+{
+  "name": "tugas-pkwu",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/zieegaming70-crypto/tugas-pkwu#readme",
+  "bugs": {
+    "url": "https://github.com/zieegaming70-crypto/tugas-pkwu/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zieegaming70-crypto/tugas-pkwu.git"
+  },
+  "license": "ISC",
+  "author": "bagus",
+  "type": "commonjs",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "three": "^0.183.2"
+  },
+  "devDependencies": {}
+}
